@@ -22,7 +22,6 @@ set -x FZF_DEFAULT_COMMAND "fd --hidden --follow --exclude .git"
 set -x FZF_FIND_FILE_COMMAND $FZF_DEFAULT_COMMAND
 set -q FZF_TMUX; or set -U FZF_TMUX 1
 
-set -x GOPATH $HOME/go
 set -x LANG en_US.UTF-8
 set -x LC_CTYPE en_US.UTF-8
 set -x PIPENV_VENV_IN_PROJECT 1
@@ -36,19 +35,13 @@ if test -e "$HOME/.pythonrc"
 end
 
 # TODO: append only if there is no value like with _PATH_PREPEND
-set -x CFLAGS {$CFLAGS} -I(xcrun --show-sdk-path)/usr/include/
-set -x CPPFLAGS {$CPPFLAGS} -I/usr/local/opt/zlib/include
-set -x LDFLAGS {$LDFLAGS} -L/usr/local/opt/zlib/lib
-set -x PKG_CONFIG_PATH {$PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig
+#set -x CFLAGS {$CFLAGS} -I(xcrun --show-sdk-path)/usr/include/
+#set -x CPPFLAGS {$CPPFLAGS} -I/usr/local/opt/zlib/include
+#set -x LDFLAGS {$LDFLAGS} -L/usr/local/opt/zlib/lib
+#set -x PKG_CONFIG_PATH {$PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig
 
 set _PATH_PREPEND \
-    /usr/local/opt/icu4c/bin \
-    /usr/local/opt/gnu-getopt/bin \
-    /usr/local/opt/gettext/bin \
-    /usr/local/opt/ruby/bin \
-    $HOME/.cargo/bin \
     $HOME/.local/bin \
-    $GOPATH/bin \
     $HOME/.pyenv/shims
 
 if test -n $VIRTUAL_ENV # append virtual env /bin path
@@ -59,6 +52,8 @@ for item in $_PATH_PREPEND # (re) prepend PATH
     set -gx PATH (string match -v $item $PATH)
     set -gx PATH $item $PATH
 end
+set -x PATH $PYENV_ROOT/shims $PYENV_ROOT/bin $PATH
+pyenv rehash
 
 set -g pure_threshold_command_duration 2
 
@@ -79,11 +74,7 @@ abbr -a tm tmux -u
 
 alias dsa 'docker stop (docker ps -q)'
 alias dps 'docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}\t{{.Status}}"'
-alias top 'top -o cpu'
-
-if test -n "$ALACRITTY_LOG"
-    set -x TERM alacritty
-end
+alias n 'nvim'
 
 if status --is-interactive
     set BASE16_SHELL "$HOME/.config/base16-shell/"

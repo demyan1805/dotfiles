@@ -45,6 +45,13 @@ brew install bat fd fzf ripgrep telnet shellcheck hadolint
 git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
 ```
 
+select theme:
+
+
+base16-init
+base16-ia-dark
+
+
 ## Post installation configs
 
 

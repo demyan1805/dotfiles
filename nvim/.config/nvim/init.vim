@@ -1,5 +1,6 @@
-" Author: Vakhmin Anton <html.ru@gmail.com>
-"
+" Authors:
+" Vakhmin Anton <html.ru@gmail.com>
+" Demyanovich Stepan <demyan1805@gmail.com>
 
 if &shell =~# 'fish$'
   set shell=sh
@@ -7,24 +8,37 @@ endif
 
 filetype plugin indent on
 
-" Plugins {{{
+" Plugins
 
 call plug#begin('~/.local/share/nvim/plugged')
-Plug '/usr/local/opt/fzf' " fzf integration
-Plug 'junegunn/fzf.vim' " fzf commands
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'benmills/vimux' " tmux commands (Vimux*)
 Plug 'cespare/vim-toml' " .toml syntax highlighting
 Plug 'chr4/nginx.vim' " nginx syntax highlighting
+Plug 'scrooloose/nerdtree' " tree view
+Plug 'ryanoasis/vim-devicons' " icons for tree
 Plug 'chriskempson/base16-vim' " base16 color schemes
+Plug 'tomasiser/vim-code-dark' " vscode like color scheme
 Plug 'dag/vim-fish' " .fish syntax highlighting
-Plug 'haya14busa/is.vim'
-Plug 'haya14busa/vim-asterisk'
+Plug 'hail2u/vim-css3-syntax' " css syntax highlighting
+Plug 'cakebaker/scss-syntax.vim' " scss syntax highlighting
+Plug 'wavded/vim-stylus' " stylus syntax highlighting
+Plug 'digitaltoad/vim-pug' " pug(jade) syntax highlighting
+Plug 'haya14busa/is.vim' " incremental search (C-j in 'search mode')
+Plug 'haya14busa/vim-asterisk' " * key features
 Plug 'justinmk/vim-sneak' " motions with: s / S
 Plug 'liuchengxu/vim-which-key', {'on': ['WhichKey', 'WhichKey!']}
 Plug 'ludovicchabant/vim-gutentags' " .ctags autoupdating
 Plug 'luochen1990/rainbow' " colored brackets highlighting
 Plug 'michaeljsmith/vim-indent-object' " indentation text objects: i / I
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " completions by langservers
+" Plug 'leafgarland/typescript-vim'
+Plug 'APZelos/blamer.nvim'
+Plug 'mxw/vim-jsx'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'prabirshrestha/async.vim'
+Plug 'scrooloose/nerdcommenter'
 Plug 'plasticboy/vim-markdown' " .md syntax highlighting
 Plug 'romainl/vim-qf' " quickfix commands
 Plug 'sudar/vim-arduino-syntax' " .ino syntax highlighting
@@ -32,10 +46,12 @@ Plug 'terryma/vim-expand-region' " visual selection by: + / _ TODO: conf objects
 Plug 'tpope/vim-commentary' " comment mappings
 Plug 'tpope/vim-repeat' " repeat changes from several plugins
 Plug 'tpope/vim-surround' " surrounding mappings
-Plug 'tpope/vim-unimpaired' " motions with brackets
+Plug 'jiangmiao/auto-pairs' " autoclose brackets, quotes, etc...
 Plug 'Yggdroot/indentLine' " indentation guide line
 Plug 'vim-python/python-syntax' " .py syntax highlighting
 Plug 'Vimjas/vim-python-pep8-indent' " .py string indentation
+
+Plug 'vim-scripts/BufOnly.vim' " :BufOnly command to close all buffers
 
 " temporarily plugged:
 Plug 'alfredodeza/pytest.vim'
@@ -47,9 +63,11 @@ Plug 'tpope/vim-dispatch'  " make & dispatch async
 " support (with pytest-vim-compiler)
 call plug#end()
 
-" }}}
+
 " Colors & Syntax {{{
 
+let g:jsx_ext_required = 0
+let g:coc_global_extensions = ['coc-emmet', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver']
 if has('syntax')
   if &diff
     syntax off
@@ -58,13 +76,24 @@ if has('syntax')
   endif
 endif
 
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
-endif
+colorscheme codedark
+
+" base16 theme
+" if filereadable(expand("~/.vimrc_background"))
+  " let base16colorspace=256
+  " source ~/.vimrc_background
+" endif
+
+" devicons
+set encoding=UTF-8
+set guifont=DroidSansMono\ Nerd\ Font\ 26
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+
+" Rainbow Fix
+let g:rainbow_active = 1
+autocmd VimEnter * RainbowToggle
 
 " }}}
 " Options {{{
@@ -72,7 +101,6 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 " IO
 set autoread
 set exrc secure
-set encoding=utf-8
 
 set path+=**
 set wildignore+=*.pyc
@@ -90,6 +118,44 @@ if filereadable(expand('~/.pyenv/virtualenvs/pynvim/bin/python3'))
 else
   let g:loaded_python3_provider = 0
 endif
+
+" Navigation
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeIgnore = []
+let g:NERDTreeStatusline = ''
+" Automaticaly close nvim if NERDTree is only thing left open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && v:this_session == "" && b:NERDTree.isTabTree()) | q | endif
+" Toggle
+nnoremap <silent> <C-b> :NERDTreeToggle<CR>
+nnoremap <silent> <M-b> :NERDTreeFocus<CR>
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" open new split panes to right and below
+set splitright
+set splitbelow
+" turn terminal to normal mode with escape
+tnoremap <Esc> <C-\><C-n>
+" start terminal in insert mode
+au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+" open terminal on ctrl+n
+function! OpenTerminal()
+  split term://fish
+  resize 10
+endfunction
+nnoremap <c-n> :call OpenTerminal()<CR>
+
+
+" use alt+hjkl to move between split/vsplit panels
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 
 " Mappings
 set keymap=russian-jcukenmac
@@ -126,7 +192,7 @@ set viewoptions-=options
 
 " Windows UI
 set noruler
-set nonumber
+set number
 set noshowmode
 set nocursorline
 set splitbelow
@@ -140,7 +206,7 @@ set titleold=
 set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
 
 " Indentation
-set tabstop=4
+" set tabstop=4
 set expandtab
 set autoindent
 set shiftwidth=4
@@ -170,6 +236,13 @@ set hlsearch
 set incsearch
 set smartcase
 set ignorecase
+nnoremap <C-p> :FZF<CR>
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit'
+  \}
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 " Spell
 set spelllang=ru_yo,en_us
@@ -179,13 +252,13 @@ set grepprg=rg\ --vimgrep
 set tags=./.ctags,.ctags
 
 " Completion
-set completeopt=noinsert,menuone,noselect
+" set completeopt=noinsert,menuone,noselect
 
 " Environment variables
-let $FZF_DEFAULT_OPTS = '--bind=alt-enter:select-all,alt-bs:deselect-all '.$_FZF_COMMON_OPTS
+"let $FZF_DEFAULT_OPTS = '--bind=alt-enter:select-all,alt-bs:deselect-all '.$_FZF_COMMON_OPTS
 
-call setenv('PYTEST_ADDOPTS', v:null)
-call setenv('PYTHONPATH', '/users/shagohead/.pyenv/virtualenvs/jedi/lib/python3.8/site-packages/')
+" call setenv('PYTEST_ADDOPTS', v:null)
+" call setenv('PYTHONPATH', '~/.pyenv/virtualenvs/jedi/lib/python3.8/site-packages/')
 
 if !has('nvim')
   set t_Co=256
@@ -203,7 +276,7 @@ if !has('nvim')
   endif
 endif
 
-if exists('+termguicolors') && ($TERM == 'alacritty' || $TERM == 'xterm-kitty')
+if exists('+termguicolors') && ($TERM == 'alacritty' || $TERM == 'xterm-kitty' || $TERM == 'screen-256color')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
@@ -222,27 +295,32 @@ let g:python_highlight_all = 1
 " }}}
 " Mappings {{{
 
-" Disable arrows
-noremap <Up> <Nop>
-noremap <Down> <Nop>
-noremap <Left> <Nop>
-noremap <Right> <Nop>
-inoremap <Up> <Nop>
-inoremap <Down> <Nop>
-inoremap <Left> <Nop>
-inoremap <Right> <Nop>
+" Back to normal mode
+inoremap jj <ESC>
+
+" Visual mode selected tabbing
+vmap <Tab> >gv
+vmap <S-Tab> <gv
+
+" Comments
+nmap <C-_> <leader>c<Space>
+vmap <C-_> <leader>c<Space>gv
+let g:NERDSpaceDelims = 1
+let g:NERDCompactSexyComs = 1
+let g:NERDDefaultAlign = 'left'
+let g:NERDToggleCheckAllLines = 1
 
 " Command mode word motions
 cnoremap <M-b> <S-Left>
 cnoremap <M-f> <S-Right>
 
 " Command line C-n/p search substring
-cnoremap <C-n> <Down>
-cnoremap <C-p> <Up>
+"cnoremap <C-n> <Down>
+"cnoremap <C-p> <Up>
 
 " Paste recent yank
-nnoremap <C-p> "0p
-vnoremap <C-p> "0p
+"nnoremap <C-p> "0p
+"vnoremap <C-p> "0p
 
 " Copy & paste within clipboard
 nnoremap <M-p> "+p
@@ -258,6 +336,9 @@ nnoremap  
 " Jump to QuickFix place
 nnoremap <silent> [q :cp<CR>
 nnoremap <silent> ]q :cn<CR>
+
+"Multi cursor support
+xmap <silent> <C-d> <Plug>(coc-cursors-range)
 
 " Grep word or visual selection
 nnoremap <silent> gp :execute ':grep '.expand('<cword>')<CR>
@@ -327,6 +408,21 @@ nnoremap <silent> <Leader>n :call CocActionAsync('rename')<CR>
 nnoremap <silent> <Leader>y :call CocActionAsync('showSignatureHelp')<CR>
 inoremap <C-y> <C-\><C-o>:call CocActionAsync('showSignatureHelp')<CR>
 
+function! ShowDocIfNoDiagnostic(timer_id)
+  if (coc#util#has_float() == 0)
+    silent call CocActionAsync('doHover')
+  endif
+endfunction
+
+function! s:show_hover_doc()
+  call timer_start(500, 'ShowDocIfNoDiagnostic')
+endfunction
+
+autocmd CursorHoldI * :call <SID>show_hover_doc()
+autocmd CursorHold * :call <SID>show_hover_doc()
+
+nnoremap <silent> <C-M-k> :call CocAction('doHover')<CR> 
+
 " }}}
 " Commands {{{
 
@@ -358,7 +454,7 @@ augroup vimrc
   au BufReadPost * if !&expandtab | set listchars+=tab:\ \  | endif
 
   " Highlights cleanup
-  au ColorScheme * call syntax#update_colors()
+  " au ColorScheme * call syntax#update_colors()
 
   " Menu autoclose
   au CompleteDone * if pumvisible() == 0 && index([':', '/'], getcmdwintype()) == -1 | pclose | endif
@@ -375,6 +471,9 @@ augroup vimrc
   " Word wrapping
   au FileType html,jinja.html,htmldjango,python setlocal wrap
 
+  " Tab size
+  au FileType typescript,typescript.tsx,javascript,javascript.jsx setl sw=2 sts=2 et
+  
   " Pytest plugin prints long lines with spaces
   " Python trailing spaces highlighted with python-syntax
   au FileType pytest,python setlocal listchars-=trail:↔
@@ -404,17 +503,17 @@ augroup vimrc
       "
       " Automatic rename of tmux window
       " Set option set-option -g allow-rename off in ~/.tmux.conf
-      " au BufEnter * if empty(&buftype)
-      "       \| call system('tmux rename-window '.expand('%:t:S'))
-      "       \| endif
-      " au VimLeave * call system('tmux set-window automatic-rename on')
+      au BufEnter * if empty(&buftype)
+            \| call system('tmux rename-window '.expand('%:t:S'))
+            \| endif
+      au VimLeave * call system('tmux set-window automatic-rename on')
     endif
   endif
 
   au VimResized * wincmd =
 augroup end
 
-call syntax#update_colors()
+" call syntax#update_colors()
 
 " }}}
 

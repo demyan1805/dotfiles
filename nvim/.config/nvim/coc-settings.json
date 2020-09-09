@@ -1,7 +1,9 @@
 {
     "coc.preferences.previewAutoClose": true,
     "coc.preferences.useQuickfixForLocations": true,
-    "diagnostic.messageTarget": "echo",
+    "coc.preferences.hoverTarget": "float",
+    "suggest.floatEnable": true,
+    "diagnostic.messageTarget": "float",
     "suggest.completionItemKindLabels": {
         "keyword": "\uf1de",
         "variable": "\ue79b",
@@ -45,8 +47,8 @@
     "python.linting.flake8Path": "~/.local/bin/flake8",
     "python.linting.flake8Enabled": true,
     "python.linting.mypyEnabled": false,
-    "python.jediEnabled": true,
-    "python.sortImports.path": "/Users/shagohead/.local/bin/isort",
+    "python.jediEnabled": false,
+    "python.sortImports.path": "~/.local/bin/isort",
     "python.workspaceSymbols.ctagsPath": "ctags.fish",
     "python.workspaceSymbols.tagFilePath": "${workspaceFolder}/.ctags",
     "typescript.suggestionActions.enabled": true,
@@ -97,5 +99,9 @@
                 "swift"
             ]
         }
-    }
+    },
+    "tsserver.tsdk": ".yarn/sdks/typescript/lib",
+    "eslint.packageManager": "yarn",
+    "eslint.nodePath": ".yarn/sdks",
+    "eslint.run": "onSave"
 }
