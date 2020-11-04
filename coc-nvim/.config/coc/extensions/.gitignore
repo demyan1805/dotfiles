@@ -1,1 +1,4 @@
-node-modules
+*
+
+!.gitignore
+!package.json
