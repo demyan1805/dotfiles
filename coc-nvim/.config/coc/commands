@@ -1,6 +1,6 @@
-eslint.executeAutofix
 python.runLinting
+editor.action.organizeImport
+eslint.executeAutofix
 TabNine::config
 python.sortImports
-editor.action.organizeImport
 python.setInterpreter

@@ -71,6 +71,7 @@ abbr -a l ls -la
 abbr -a psaux 'ps aux | head -1 && ps aux | grep -v grep | grep'
 abbr -a run ./manage.py runserver
 abbr -a tm tmux -u
+abbr -a ssh env TERM=xterm-256color ssh
 
 alias dsa 'docker stop (docker ps -q)'
 alias dps 'docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}\t{{.Status}}"'
