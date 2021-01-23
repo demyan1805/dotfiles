@@ -11,8 +11,6 @@ window:
 scrolling:
   history: 15000
 
-tabspaces: 4
-
 font:
   normal:
     family: Iosevka Nerd Font

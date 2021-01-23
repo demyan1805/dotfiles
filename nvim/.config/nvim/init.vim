@@ -50,7 +50,7 @@ Plug 'jiangmiao/auto-pairs' " autoclose brackets, quotes, etc...
 Plug 'Yggdroot/indentLine' " indentation guide line
 Plug 'vim-python/python-syntax' " .py syntax highlighting
 Plug 'Vimjas/vim-python-pep8-indent' " .py string indentation
-
+Plug 'psf/black'
 Plug 'vim-scripts/BufOnly.vim' " :BufOnly command to close all buffers
 
 " temporarily plugged:

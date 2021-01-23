@@ -1,5 +1,5 @@
-python.runLinting
 editor.action.organizeImport
+python.runLinting
 eslint.executeAutofix
 TabNine::config
 python.sortImports
