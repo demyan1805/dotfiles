@@ -13,6 +13,7 @@ filetype plugin indent on
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'udalov/kotlin-vim' " kotlin
 Plug 'benmills/vimux' " tmux commands (Vimux*)
 Plug 'cespare/vim-toml' " .toml syntax highlighting
 Plug 'chr4/nginx.vim' " nginx syntax highlighting
@@ -128,7 +129,7 @@ let g:NERDTreeStatusline = ''
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && v:this_session == "" && b:NERDTree.isTabTree()) | q | endif
 " Toggle
 nnoremap <silent> <C-b> :NERDTreeToggle<CR>
-nnoremap <silent> <M-b> :NERDTreeFocus<CR>
+nnoremap <silent> <C-~> :NERDTreeFocus<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
@@ -148,14 +149,14 @@ nnoremap <c-n> :call OpenTerminal()<CR>
 
 
 " use alt+hjkl to move between split/vsplit panels
-tnoremap <A-h> <C-\><C-n><C-w>h
-tnoremap <A-j> <C-\><C-n><C-w>j
-tnoremap <A-k> <C-\><C-n><C-w>k
-tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+tnoremap <D-h> <C-\><C-n><C-w>h
+tnoremap <D-j> <C-\><C-n><C-w>j
+tnoremap <D-k> <C-\><C-n><C-w>k
+tnoremap <D-l> <C-\><C-n><C-w>l
+nnoremap <D-h> <C-w>h
+nnoremap <D-j> <C-w>j
+nnoremap <D-k> <C-w>k
+nnoremap <D-l> <C-w>l
 
 " Mappings
 set keymap=russian-jcukenmac
@@ -292,8 +293,7 @@ let g:indentLine_fileTypeExclude = ['help', 'markdown']
 let g:python_pep8_indent_multiline_string = -1 " to the same line
 let g:python_highlight_all = 1
 
-" }}}
-" Mappings {{{
+" Mappings
 
 " Back to normal mode
 inoremap jj <ESC>
@@ -303,16 +303,12 @@ vmap <Tab> >gv
 vmap <S-Tab> <gv
 
 " Comments
-nmap <C-_> <leader>c<Space>
-vmap <C-_> <leader>c<Space>gv
+nnoremap <c-z> <leader>c<Space>
+vnoremap <c-z> <leader>c<Space>gv
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDToggleCheckAllLines = 1
-
-" Command mode word motions
-cnoremap <M-b> <S-Left>
-cnoremap <M-f> <S-Right>
 
 " Command line C-n/p search substring
 "cnoremap <C-n> <Down>
@@ -323,10 +319,10 @@ cnoremap <M-f> <S-Right>
 "vnoremap <C-p> "0p
 
 " Copy & paste within clipboard
-nnoremap <M-p> "+p
-inoremap <M-p> +
-vnoremap <M-p> "+p
-vnoremap <M-y> "+y
+nnoremap <D-p> "+p
+inoremap <D-p> +
+vnoremap <D-p> "+p
+vnoremap <D-y> "+y
 
 " Toggle inputmode/langmap with C-^, but in normal mode
 nnoremap  a
@@ -414,12 +410,12 @@ function! ShowDocIfNoDiagnostic(timer_id)
   endif
 endfunction
 
-function! s:show_hover_doc()
-  call timer_start(500, 'ShowDocIfNoDiagnostic')
-endfunction
+"function! s:show_hover_doc()
+"  call timer_start(500, 'ShowDocIfNoDiagnostic')
+"endfunction
 
-autocmd CursorHoldI * :call <SID>show_hover_doc()
-autocmd CursorHold * :call <SID>show_hover_doc()
+"autocmd CursorHoldI * :call <SID>show_hover_doc()
+"autocmd CursorHold * :call <SID>show_hover_doc()
 
 nnoremap <silent> <C-M-k> :call CocAction('doHover')<CR> 
 

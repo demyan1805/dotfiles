@@ -1,1 +1,1 @@
-/home/stepan/.fzf/shell/key-bindings.fish
+/Users/stepan/.fzf/shell/key-bindings.fish

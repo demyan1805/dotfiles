@@ -42,6 +42,8 @@ end
 
 set _PATH_PREPEND \
     $HOME/.local/bin \
+    /opt/homebrew/bin \
+    /usr/local/bin \
     $HOME/.pyenv/shims
 
 if test -n $VIRTUAL_ENV # append virtual env /bin path
@@ -53,7 +55,7 @@ for item in $_PATH_PREPEND # (re) prepend PATH
     set -gx PATH $item $PATH
 end
 set -x PATH $PYENV_ROOT/shims $PYENV_ROOT/bin $PATH
-pyenv rehash
+#pyenv rehash
 
 set -g pure_threshold_command_duration 2
 
@@ -71,7 +73,6 @@ abbr -a l ls -la
 abbr -a psaux 'ps aux | head -1 && ps aux | grep -v grep | grep'
 abbr -a run ./manage.py runserver
 abbr -a tm tmux -u
-abbr -a ssh env TERM=xterm-256color ssh
 
 alias dsa 'docker stop (docker ps -q)'
 alias dps 'docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}\t{{.Status}}"'
@@ -124,3 +125,4 @@ if status --is-interactive
         bind -M insert \cr fzy_history
     end
 end
+set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
